@@ -6,7 +6,7 @@
 
 alias ls="lsd --color=always -h --group-directories-first"
 
-highlight () {  egrep --color always "$1|" "$2" ; }
+highlight () {  egrep --color=always "$1|" "$2" ; }
 
 
 
