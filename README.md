@@ -1,6 +1,13 @@
-ftop.sh
+Knobosh
 =======
 
+About
+======
+This is where I'll put my shell scripts
+
+
+ftop
+=====
 Shows the progress of a tar command
 
 While playing with /proc I found out that I can see the offset of an open file(descriptor).
