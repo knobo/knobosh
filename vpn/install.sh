@@ -2,12 +2,15 @@
 
 
 if [ ! -f /etc/default/vpn-ssh.conf ]; then
+    echo Installing config file
+    echo Remember to edit /etc/default/vpn-ssh.conf
     cp vpn-ssh.conf /etc/default/
 else
     echo Config file exist. Not touching
 fi;
 
 if [ ! -f /etc/init.d/vpn-ssh ]; then
+    echo Installing initscript
     cp vpn-ssh /etc/init.d/
 else
     echo initscript exsist. Not touching
