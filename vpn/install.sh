@@ -7,7 +7,7 @@ else
     echo Config file exist. Not touching
 fi;
 
-if [ ! -f /etc/default/vpn-ssh.conf ]; then
+if [ ! -f /etc/init.d/vpn-ssh ]; then
     cp vpn-ssh /etc/init.d/
 else
     echo initscript exsist. Not touching
