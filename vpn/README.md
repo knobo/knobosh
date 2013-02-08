@@ -17,5 +17,6 @@ Install
   vpn ALL=NOPASSWD: VPN
 
 - copy the public key over to the user
-# TODO: make it possible to hava a dedicated key pair for the tunnel.
+
+TODO: make it possible to hava a dedicated key pair for the tunnel.
 
