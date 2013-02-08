@@ -13,8 +13,9 @@ Install
 
 - give it sudo rights:
 
-  Cmnd_Alias VPN=/usr/sbin/pppd
-  vpn ALL=NOPASSWD: VPN
+Cmnd_Alias VPN=/usr/sbin/pppd
+
+vpn ALL=NOPASSWD: VPN
 
 - copy the public key over to the user
 
