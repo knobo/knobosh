@@ -1,0 +1,75 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          vpn3-ssh
+# Required-Start:    $remote_fs $syslog $network
+# Required-Stop:     $remote_fs $syslog $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start daemon at boot time
+# Description:       Enable service provided by daemon.
+### END INIT INFO
+
+# /usr/local/bin/vpn-pppssh
+#
+# This script initiates a ppp-ssh vpn connection.
+# see the VPN PPP-SSH HOWTO on http://www.linuxdoc.org for more information.
+#
+# revision history:
+# 1.6 11-Nov-1996 miquels@cistron.nl
+# 1.7 20-Dec-1999 bart@jukie.net
+# 2.0 16-May-2001 bronson@trestle.com
+# 3.0 06-Feb-2013 bohmer@gmail.com
+
+if [ ! -f /etc/default/vpn-ssh.conf ]; then
+    echo configure this scritp in /etc/default/vpn-ssh.conf first
+    exit 0;
+fi
+
+source /etc/default/vpn-ssh.conf
+
+PATH=/usr/local/sbin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/bin/X11/:
+
+#
+# required commands...
+#
+
+if ! test -f $PPPD  ; then echo "can't find $PPPD";  exit 3; fi
+if ! test -f $SSH   ; then echo "can't find $SSH";   exit 4; fi
+
+start_vpn_connection () {
+    ${PPPD} updetach persist noauth passive pty "${SSH} ${LOCAL_SSH_OPTS} ${SERVER_HOSTNAME} -l${SERVER_USERNAME} -o Batchmode=yes sudo ${PPPD} nodetach notty noauth" ipparam vpn ${CLIENT_IFIPADDR}:${SERVER_IFIPADDR}
+}
+stop_vpn_connection () {
+    PID=`ps ax | grep "${SSH} ${LOCAL_SSH_OPTS} ${SERVER_HOSTNAME} -l${SERVER_USERNAME} -o" | egrep -v ' passiv[e]|grep '| awk '{print $1}'`
+    if [ "${PID}" != "" ]; then
+        kill $PID
+        echo "disconnected."
+    else
+        echo "Failed to find PID for the connection"
+    fi
+}
+
+case "$1" in
+    start)
+	start_vpn_connection
+	;;
+    stop)
+	stop_vpn_connection
+	;;
+    restart)
+	stop;
+	start;
+	;;    
+    config)
+	echo "SERVER_HOSTNAME=$SERVER_HOSTNAME"
+	echo "SERVER_USERNAME=$SERVER_USERNAME"
+	echo "SERVER_IFIPADDR=$SERVER_IFIPADDR"
+	echo "CLIENT_IFIPADDR=$CLIENT_IFIPADDR"
+	;;    
+    *)
+	echo "Usage: vpn {start|stop|restart|config}"
+	exit 1
+	;;
+esac
+
+exit 0

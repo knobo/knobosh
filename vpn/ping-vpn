@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Unknown origin
+#
+# Changed by Knut Olav Bøhmer 06-02-2013
+#
+
+source /etc/default/vpn-ssh.conf
+
+while : ; do
+
+    STATUS=ping -qc3 $SERVER_IFIPADDR  | awk \
+	'/packets/ { print ($1 == $4) ?  "UP" : "DOWN" }'
+        
+    if [ $STATUS == "DOWN" ]; then
+	date  +"%F %T " | tr -d "\n" >> $LOGFILE
+	echo "Connection is down. Restarting" >> $LOGFILE 
+	
+	$VPNSCRIPT stop
+	$VPNSCRIPT start
+	
+    else
+	date  +"%F %T " | tr -d "\n" >> $LOGFILE
+	echo "Connection is up" >> $LOGFILE 
+	exit
+    fi
+    
+done

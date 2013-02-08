@@ -1,0 +1,32 @@
+#!/bin/bash
+
+if [ -f /etc/default/vpn-ssh.conf ]; then
+    source /etc/default/vpn-ssh.conf
+else 
+    echo not configured
+    exit 0
+fi
+
+if [ ! -d $LOGDIR ]; then
+    mkdir -p $LOGDIR
+fi
+
+if [ -z "$LOGFILE" ]; then 
+    echo logfile not specified
+    exit 0
+else
+    if [ -f ${LOGFILE}2 ]; then
+	rm -rf ${LOGFILE}2
+    fi
+    
+    if [ -f ${LOGFILE}1 ]; then
+	mv ${LOGFILE}1 ${LOGFILE}2 
+    fi
+
+    if [ -f ${LOGFILE} ]; then
+	mv ${LOGFILE} ${LOGFILE}1
+    fi
+    
+    touch $LOGFILE
+exit 0
+fi

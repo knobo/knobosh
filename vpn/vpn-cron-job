@@ -1,0 +1,4 @@
+#Logrotate av log til vpn
+4 1 * * *     root /root/vpn3/ping-vpn3-logrotate
+#Skjekker vpnforbindelse
+*/10 * * * * root /root/vpn3/ping-vpn3
