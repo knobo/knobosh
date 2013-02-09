@@ -57,8 +57,8 @@ case "$1" in
 	stop_vpn_connection
 	;;
     restart)
-	stop;
-	start;
+	stop_vpn_connection
+	start_vpn_connection
 	;;    
     config)
 	echo "SERVER_HOSTNAME=$SERVER_HOSTNAME"
