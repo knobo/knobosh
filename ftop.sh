@@ -1,8 +1,9 @@
 #!/bin/bash 
 
 PROGRAM=tar
+ONCE=""
 
-while getopts "p:c:dnh?" opt; do
+while getopts "p:c:dnh?o" opt; do
     case $opt in
 	d)
 	    DEBUG=1
@@ -16,6 +17,9 @@ while getopts "p:c:dnh?" opt; do
 	n)
 	    DRYRUN=yes
 	    ;;
+    o)
+        ONCE=true
+        ;;
 	h|\?)
 	    echo -e "Usage $0 [-dpcn]\n" >&2
 	    exit 0;
@@ -26,8 +30,8 @@ done
 if [ -z "$PID" ]; then
     PID=$(pidof -s ${PROGRAM:-tar});
     if [ -z "$PID" ]; then
-	echo Error: $PROGRAM is not running
-	exit 0
+	echo $PROGRAM not running
+c	exit 0
     fi;
 fi
 
@@ -54,10 +58,16 @@ if [ "$DRYRUN" = yes ]; then
     exit 0
 fi
 
+if [[ ! -z "$ONCE" ]]
+then
+    awk  -v size=$SIZE -v file=$FILE \
+	    '/pos:/ { printf "%s:   %3.2f %%  (%s/%s) bytes\r" ,file ,($2/size*100),$2,size;}' $FDINFO;
+else
+
 while [ -f "$FDINFO" ] ;  do
     awk  -v size=$SIZE -v file=$FILE \
-	'/pos:/ { printf "%s:   %3.2f %%  (%s/%s) bytes\r" ,file ,($2/size*100),$2,size;}' $FDINFO;
+	    '/pos:/ { printf "%s:   %3.2f %%  (%s/%s) bytes\r" ,file ,($2/size*100),$2,size;}' $FDINFO;
     sleep .5;
 done
-
+fi;
 echo 
